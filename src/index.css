@@ -1,0 +1,12 @@
+* {
+  margin: 0;
+  font-family: "Ubuntu", serif !important;
+  font-style: normal;
+}
+
+code {
+  font-family: "Ubuntu", serif !important;
+}
+.MuiInputBase-root {
+  border-radius: 8px !important;
+}
