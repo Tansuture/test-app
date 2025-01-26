@@ -86,7 +86,6 @@ function AddressInfoForm() {
 
           <Grid size={12}>
             <FormInputText
-              type="text"
               name="addressInfo.street"
               control={control}
               label="Улица"

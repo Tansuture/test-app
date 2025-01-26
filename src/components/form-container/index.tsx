@@ -40,13 +40,7 @@ const Index = () => {
     resolver: yupResolver(formSchema()),
     defaultValues: getStoredData(),
   });
-  const {
-    handleSubmit,
-    trigger,
-    watch,
-    reset,
-    formState: { errors },
-  } = methods;
+  const { handleSubmit, trigger, watch, reset } = methods;
   const formValues = watch();
 
   useEffect(() => {
@@ -62,38 +56,58 @@ const Index = () => {
       reset(defaultValues);
     });
   };
+  const handleKeyPress = async (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+
+      if (activeStep === 2) {
+        handleSubmit(onSubmit)();
+      } else if (activeStep !== 3) {
+        handleNextStep();
+      }
+    }
+  };
 
   const steps = [
     { label: "Персональная информация", step: "Шаг 1 " },
-    { label: "Адресня информация", step: "Шаг 2 " },
+    { label: "Адресная информация", step: "Шаг 2 " },
     { label: "Финансовая информация", step: "Шаг 3 " },
     { label: "Потверждение", step: "Шаг 4 " },
   ];
-
   const handleNextStep = async () => {
     let isStepValid = false;
 
     switch (activeStep) {
       case 0:
-        isStepValid = await trigger("personalInfo", { shouldFocus: true });
-        localStorage.setItem("formData", JSON.stringify(formValues));
-
+        isStepValid = await trigger([
+          "personalInfo.name",
+          "personalInfo.surName",
+          "personalInfo.dateValue",
+          "personalInfo.number",
+          "personalInfo.email",
+        ]);
         break;
       case 1:
-        isStepValid = await trigger("addressInfo", { shouldFocus: true });
-        localStorage.setItem("formData", JSON.stringify(formValues));
-
+        isStepValid = await trigger([
+          "addressInfo.city",
+          "addressInfo.country",
+          "addressInfo.street",
+          "addressInfo.index",
+        ]);
         break;
       case 2:
-        const financeValid = await trigger("financeInfo", {
-          shouldFocus: true,
-        });
-        localStorage.setItem("formData", JSON.stringify(formValues));
-        isStepValid = financeValid;
+        isStepValid = await trigger([
+          "financeInfo.amount",
+          "financeInfo.income",
+          "financeInfo.term",
+        ]);
         break;
+      default:
+        return;
     }
 
     if (isStepValid) {
+      localStorage.setItem("formData", JSON.stringify(formValues));
       setActiveStep((prevStep) => prevStep + 1);
     }
   };
@@ -137,7 +151,7 @@ const Index = () => {
                 },
               }}
             >
-              {steps.map((step, index) => (
+              {steps.map((step) => (
                 <Step key={step.label}>
                   <StepLabel>
                     <StyledStepLabel>{step.step}</StyledStepLabel>
@@ -153,7 +167,10 @@ const Index = () => {
 
           <StyledContent>
             <FormProvider {...methods}>
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                onKeyDown={handleKeyPress}
+              >
                 {activeStep === 0 && <PersonalInfoForm />}
                 {activeStep === 1 && <AddressInfoForm />}
                 {activeStep === 2 && <FinanceInfoForm />}

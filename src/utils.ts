@@ -27,7 +27,7 @@ export const getStoredData = () => {
 
 export const submitToFirebase = async (data: FormTypes) => {
   try {
-    const response = await axios.post(
+    await axios.post(
       "https://form-api-8224a-default-rtdb.firebaseio.com/submissions.json",
       data
     );

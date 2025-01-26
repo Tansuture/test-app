@@ -1,27 +1,10 @@
-import React from "react";
-import { Controller, useFormContext } from "react-hook-form";
-import {
-  Box,
-  Slider,
-  SliderValueLabelProps,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { useFormContext } from "react-hook-form";
+import { Box, Typography } from "@mui/material";
 import { FormInputText } from "../shared/text-field";
 import Grid from "@mui/material/Grid2";
 import { FormInputSlider } from "../shared/slider";
-function ValueLabelComponent(props: SliderValueLabelProps) {
-  const { children, value } = props;
-
-  return (
-    <Tooltip enterTouchDelay={0} placement="top" title={value}>
-      {children}
-    </Tooltip>
-  );
-}
-
 const Index = () => {
-  const { control, watch } = useFormContext();
+  const { control } = useFormContext();
   return (
     <>
       <Typography variant="h5" align="center" fontWeight="bold">
