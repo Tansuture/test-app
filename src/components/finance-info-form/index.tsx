@@ -42,6 +42,7 @@ const Index = () => {
             <FormInputSlider
               max={1000000}
               min={20000}
+              defaultValue={20000}
               name="financeInfo.amount"
               control={control}
               label="Сумма кредита"
@@ -51,6 +52,7 @@ const Index = () => {
             <FormInputSlider
               max={120}
               min={3}
+              defaultValue={3}
               name="financeInfo.term"
               control={control}
               label="Срок кредита(мес)"

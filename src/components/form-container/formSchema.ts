@@ -1,4 +1,4 @@
-import { mixed, object, ObjectSchema, string } from "yup";
+import { mixed, number, object, ObjectSchema, string } from "yup";
 
 export const formSchema = (): ObjectSchema<any> =>
   object().shape({
@@ -25,7 +25,7 @@ export const formSchema = (): ObjectSchema<any> =>
     }),
     financeInfo: object().shape({
       income: string().required("Поле обязательное"),
-      amount: string().required("Поле обязательное"),
-      term: string().required("Поле обязательное"),
+      amount: number().required("Поле обязательное"),
+      term: number().required("Поле обязательное"),
     }),
   });

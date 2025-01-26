@@ -33,6 +33,7 @@ export const FormInputText = ({
   return (
     <Controller
       name={name}
+      defaultValue={""}
       control={control}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <TextField
@@ -42,7 +43,7 @@ export const FormInputText = ({
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             handleOnChange(e, onChange);
           }}
-          value={value}
+          value={value || ""}
           fullWidth
           label={label}
           variant="outlined"

@@ -9,6 +9,7 @@ export const FormInputSlider = ({
   min,
   max,
   label,
+  defaultValue,
 }: FormInputProps) => {
   return (
     <>
@@ -16,7 +17,7 @@ export const FormInputSlider = ({
       <Controller
         name={name}
         control={control}
-        defaultValue={[0, 10]}
+        defaultValue={defaultValue}
         render={({ field }) => (
           <Slider
             defaultValue={min}

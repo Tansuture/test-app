@@ -7,7 +7,7 @@ import { PatternFormat } from "react-number-format";
 import { countries } from "../../dictionary";
 
 function AddressInfoForm() {
-  const { control, watch } = useFormContext();
+  const { control } = useFormContext();
   return (
     <React.Fragment>
       <Typography variant="h5" align="center" fontWeight="bold">
@@ -19,6 +19,7 @@ function AddressInfoForm() {
             <Controller
               name="addressInfo.country"
               control={control}
+              defaultValue={null}
               render={({
                 field: { onChange, value, ref },
                 fieldState: { error },
@@ -27,7 +28,7 @@ function AddressInfoForm() {
                   id="country-select-demo"
                   fullWidth
                   options={countries}
-                  value={value}
+                  value={value || null}
                   onChange={(_, newValue) => onChange(newValue)}
                   autoHighlight
                   size="small"
