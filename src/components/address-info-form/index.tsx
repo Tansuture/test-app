@@ -1,33 +1,28 @@
-import * as React from 'react';
-import {Controller,  useFormContext} from 'react-hook-form';
-import {
-
-  TextField,
-  Typography,
-  Box, Autocomplete,
-
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import {FormInputText} from "../shared/text-field";
-import {PatternFormat} from "react-number-format";
-import {countries} from "../../dictionary";
-
+import * as React from "react";
+import { Controller, useFormContext } from "react-hook-form";
+import { TextField, Typography, Box, Autocomplete } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { FormInputText } from "../shared/text-field";
+import { PatternFormat } from "react-number-format";
+import { countries } from "../../dictionary";
 
 function AddressInfoForm() {
-
-  const { control,watch } = useFormContext();
+  const { control, watch } = useFormContext();
   return (
     <React.Fragment>
-      <Typography  variant='h5' align='center' fontWeight="bold">
+      <Typography variant="h5" align="center" fontWeight="bold">
         Адресная информация
       </Typography>
-      <Box sx={{my:3}}>
+      <Box sx={{ my: 3 }}>
         <Grid container spacing={2}>
-          <Grid  size={12}>
+          <Grid size={12}>
             <Controller
               name="addressInfo.country"
               control={control}
-              render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+              render={({
+                field: { onChange, value, ref },
+                fieldState: { error },
+              }) => (
                 <Autocomplete
                   id="country-select-demo"
                   fullWidth
@@ -36,15 +31,17 @@ function AddressInfoForm() {
                   onChange={(_, newValue) => onChange(newValue)}
                   autoHighlight
                   size="small"
-                  getOptionLabel={(option) => option?.name || ''}
-                  isOptionEqualToValue={(option, value) => option.code === value?.code}
+                  getOptionLabel={(option) => option?.name || ""}
+                  isOptionEqualToValue={(option, value) =>
+                    option.code === value?.code
+                  }
                   renderOption={(props, option) => {
                     const { key, ...optionProps } = props;
                     return (
                       <Box
                         key={key}
                         component="li"
-                        sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                        sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                         {...optionProps}
                       >
                         <img
@@ -68,7 +65,7 @@ function AddressInfoForm() {
                       slotProps={{
                         htmlInput: {
                           ...params.inputProps,
-                          autoComplete: 'new-password',
+                          autoComplete: "new-password",
                         },
                       }}
                     />
@@ -76,14 +73,23 @@ function AddressInfoForm() {
                 />
               )}
             />
-
           </Grid>
           <Grid size={12}>
-            <FormInputText type="text" name="addressInfo.city" control={control} label="Город" />
+            <FormInputText
+              type="text"
+              name="addressInfo.city"
+              control={control}
+              label="Город"
+            />
           </Grid>
 
           <Grid size={12}>
-            <FormInputText type="text" name="addressInfo.street" control={control} label="Улица" />
+            <FormInputText
+              type="text"
+              name="addressInfo.street"
+              control={control}
+              label="Улица"
+            />
           </Grid>
 
           <Grid size={12}>
@@ -117,7 +123,6 @@ function AddressInfoForm() {
         </Grid>
       </Box>
     </React.Fragment>
-
   );
 }
-export default  AddressInfoForm
+export default AddressInfoForm;

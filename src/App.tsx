@@ -1,11 +1,8 @@
-import React from "react";
-import LendingForm from "./components/form-container";
-
+import FormContainer from "../src/components/form-container/index";
 function App() {
   return (
     <div className="App">
-      <LendingForm />
-      {/*<PersonalInfoForm/>*/}
+      <FormContainer />
     </div>
   );
 }

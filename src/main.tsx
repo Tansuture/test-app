@@ -31,12 +31,14 @@ const theme = createTheme({
 
           borderRadius: "50%",
           "&.Mui-active": {
+            border: "unset",
             color: "white",
             "& .MuiStepIcon-text": {
               fill: "#4F46E5",
             },
           },
           "&.Mui-completed": {
+            border: "unset",
             color: "white",
           },
         },

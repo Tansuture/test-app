@@ -1,8 +1,7 @@
-import React from 'react';
-import 'dayjs/locale/ru';
+import "dayjs/locale/ru";
 import { Controller } from "react-hook-form";
-import {DatePicker, LocalizationProvider} from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type { FormInputProps } from "../../types/form-input-props";
 import dayjs from "dayjs";
 
@@ -16,17 +15,17 @@ export const FormInputDate = ({ name, control, label }: FormInputProps) => {
           <DatePicker
             label={label}
             disableFuture
-            value={dayjs(field.value)}
+            value={field.value ? dayjs(field.value) : null}
             onChange={(newValue) => {
               field.onChange(newValue);
             }}
             slotProps={{
               textField: {
-                size:"small",
-                fullWidth:true,
+                size: "small",
+                fullWidth: true,
                 helperText: error?.message,
-                error: !!error
-              }
+                error: !!error,
+              },
             }}
           />
         )}
