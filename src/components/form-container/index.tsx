@@ -7,9 +7,8 @@ import {
   Typography,
   Button,
   Paper,
-  Modal,
-  Dialog,
-  DialogContent,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import PersonalInfoForm from "../personal-info-form";
 import { FormProvider, useForm } from "react-hook-form";
@@ -18,17 +17,23 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { formSchema } from "./formSchema";
 import AddressInfoForm from "../address-info-form";
 import FinanceInfoForm from "../finance-info-form";
-import { getStoredData, submitToFirebase } from "../../utils";
+import { defaultValues, getStoredData, submitToFirebase } from "../../utils";
 import {
   StyledSidebar,
   StyledStepLabel,
   StyledContent,
 } from "../styled-components";
 import { ToastContainer } from "react-toastify";
+import { useSearchParams } from "react-router-dom";
 
 const Index = () => {
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [isConfirmOpen, setIsOpenConfirm] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [activeStep, setActiveStep] = useState<number>(() => {
+    const stepParam = searchParams.get("step");
+    return stepParam ? parseInt(stepParam) : 0;
+  });
 
   const methods = useForm<FormTypes>({
     mode: "onChange",
@@ -43,15 +48,19 @@ const Index = () => {
     formState: { errors },
   } = methods;
   const formValues = watch();
-  console.log(errors);
+
+  useEffect(() => {
+    setSearchParams({ step: activeStep.toString() });
+  }, [activeStep]);
 
   const onSubmit = async (value: FormTypes) => {
-    try {
-      await submitToFirebase(value);
-      setActiveStep(0);
-      setIsOpenConfirm(!isConfirmOpen);
-      reset();
-    } catch (error) {}
+    setOpen(true);
+    await submitToFirebase(value).then(() => {
+      setOpen(false);
+      localStorage.removeItem("formData");
+      setActiveStep((prevStep) => prevStep + 1);
+      reset(defaultValues);
+    });
   };
 
   const steps = [
@@ -60,9 +69,6 @@ const Index = () => {
     { label: "Финансовая информация", step: "Шаг 3 " },
     { label: "Потверждение", step: "Шаг 4 " },
   ];
-  useEffect(() => {
-    localStorage.setItem("formData", JSON.stringify(formValues));
-  }, [formValues]);
 
   const handleNextStep = async () => {
     let isStepValid = false;
@@ -70,18 +76,19 @@ const Index = () => {
     switch (activeStep) {
       case 0:
         isStepValid = await trigger("personalInfo", { shouldFocus: true });
+        localStorage.setItem("formData", JSON.stringify(formValues));
+
         break;
       case 1:
         isStepValid = await trigger("addressInfo", { shouldFocus: true });
+        localStorage.setItem("formData", JSON.stringify(formValues));
+
         break;
       case 2:
         const financeValid = await trigger("financeInfo", {
           shouldFocus: true,
         });
-        if (financeValid) {
-          handleSubmit(onSubmit)();
-          return;
-        }
+        localStorage.setItem("formData", JSON.stringify(formValues));
         isStepValid = financeValid;
         break;
     }
@@ -153,7 +160,7 @@ const Index = () => {
                 {activeStep === 3 && (
                   <Box sx={{ my: 3 }}>
                     <Typography variant="h5" align="center" fontWeight="bold">
-                      Вы готовы отправить заявку?
+                      Ваша заявка отправлена
                     </Typography>
                   </Box>
                 )}
@@ -161,28 +168,47 @@ const Index = () => {
                 <Box
                   sx={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent:
+                      activeStep === 3 ? "center" : "space-between",
                   }}
                 >
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={() => setActiveStep((prevStep) => prevStep - 1)}
-                    color="inherit"
-                    sx={{ color: "text.secondary" }}
-                  >
-                    Назад
-                  </Button>
-                  {activeStep === 3 ? (
-                    <Button type="submit" variant="contained" color="primary">
-                      Потвердить
-                    </Button>
-                  ) : (
+                  {activeStep !== 3 && (
                     <Button
-                      onClick={handleNextStep}
+                      disabled={activeStep === 0}
+                      onClick={() => setActiveStep((prevStep) => prevStep - 1)}
+                      color="inherit"
+                      sx={{ color: "text.secondary" }}
+                    >
+                      Назад
+                    </Button>
+                  )}
+                  {activeStep === 2 ? (
+                    <Button
+                      type="submit"
+                      // onClick={() => handleSubmit(onSubmit)}
                       variant="contained"
                       color="primary"
                     >
-                      Дальше
+                      Потвердить
+                    </Button>
+                  ) : (
+                    activeStep !== 3 && (
+                      <Button
+                        onClick={handleNextStep}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Дальше
+                      </Button>
+                    )
+                  )}
+                  {activeStep === 3 && (
+                    <Button
+                      onClick={() => setActiveStep(0)}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Вернуться на первый шаг
                     </Button>
                   )}
                 </Box>
@@ -191,19 +217,13 @@ const Index = () => {
           </StyledContent>
         </Paper>
       </Box>
-
-      <Dialog
-        open={isConfirmOpen}
-        onClose={() => setIsOpenConfirm(!isConfirmOpen)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+      <Backdrop
+        sx={(theme) => ({ color: "primary", zIndex: theme.zIndex.drawer + 1 })}
+        open={open}
+        onClick={() => setOpen(false)}
       >
-        <DialogContent>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Ваша заявка отправлена!
-          </Typography>
-        </DialogContent>
-      </Dialog>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };

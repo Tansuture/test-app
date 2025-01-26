@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
+import { BrowserRouter } from "react-router-dom";
 const theme = createTheme({
   palette: {
     primary: {
@@ -52,8 +53,10 @@ const theme = createTheme({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </BrowserRouter>
   </StrictMode>
 );
